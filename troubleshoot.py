@@ -20,6 +20,7 @@ df_sr = ta.getSupportResistanceLevels()
 print (df_data)
 print(len(df_data))
 print (df_fib)
+print(len(df_fib))
 print (df_sr)
 
 graphs = TradingGraphs(ta)
