@@ -18,6 +18,7 @@ df_fib = ta.getFibonacciRetracementLevels()
 df_sr = ta.getSupportResistanceLevels()
 
 print (df_data)
+print(len(df_data))
 print (df_fib)
 print (df_sr)
 
