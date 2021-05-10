@@ -339,7 +339,7 @@ class TradingGraphs():
             Save the figure without displaying it         
         """
 
-        # get dataframe from technical analysis object
+        # get dataframe from technical analysis object 
         df = self.technical_analysis.getDataFrame()
 
         if not isinstance(days, int):
@@ -538,6 +538,11 @@ class TradingGraphs():
         df_candlestick_in_range = df_candlestick[df_candlestick.index >= np.min(df_subset.index)]
         for idx in df_candlestick_in_range.index.tolist():
             plt.plot(idx, df_candlestick_in_range.loc[idx]['close'], 'g*', markersize=10, label='Abandoned Baby')  
+
+        df_candlestick = self.df[self.df['bearish_engulfing'] == True]
+        df_candlestick_in_range = df_candlestick[df_candlestick.index >= np.min(df_subset.index)]
+        for idx in df_candlestick_in_range.index.tolist():
+            plt.plot(idx, df_candlestick_in_range.loc[idx]['close'], 'r*', markersize=10, label='Bearish Engulfing')    
 
         plt.xlabel(market + ' - ' + str(granularity))
         plt.ylabel('Price')
