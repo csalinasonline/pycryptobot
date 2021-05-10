@@ -445,6 +445,9 @@ class TechnicalAnalysis():
         rsi = self.calculateRelativeStrengthIndex(self.df['close'], period)
         # default to midway-50 for first entries
         rsi = rsi.fillna(50)
+        print('=======')
+        print(rsi)
+        print('=======')
         return rsi
 
     def addRSI(self, period):
