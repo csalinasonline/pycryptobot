@@ -61,6 +61,30 @@ class TechnicalAnalysis():
         self.addSMABuySignals()
         self.addMACDBuySignals()       
 
+        """ Todo Candle Stick Patterns
+        bearish_engulfing
+        bearish_harami
+        bullish_engulfing
+        bullish_harami
+        candlestick_finder
+        dark_cloud_cover
+        doji
+        doji_star
+        dragonfly_doji
+        evening_star
+        evening_star_doji
+        gravestone_doji
+        hammer
+        hanging_man
+        inverted_hammer
+        morning_star
+        morning_star_doji
+        piercing_pattern
+        rain_drop
+        rain_drop_doji
+        shooting_star
+        star
+        """
         self.addCandleAstralBuy()
         self.addCandleAstralSell()
         self.addCandleHammer()
