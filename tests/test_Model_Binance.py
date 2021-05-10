@@ -1,55 +1,45 @@
-import json, pandas, pytest, os, sys
+import json, pandas, pytest, os, sys, urllib3
 from datetime import datetime
+
+# disable insecure ssl warning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 sys.path.append('.')
 # pylint: disable=import-error
-from models.CoinbasePro import AuthAPI, PublicAPI
+from models.Binance import AuthAPI, PublicAPI
 
 VALID_ORDER_MARKET = 'BTC-GBP'
 
 def test_instantiate_authapi_without_error():
-    api_key = "00000000000000000000000000000000"
-    api_secret = "0000/0000000000/0000000000000000000000000000000000000000000000000000000000/00000000000=="
-    api_passphrase = "00000000000"
-    exchange = AuthAPI(api_key, api_secret, api_passphrase)
+    api_key = "0000000000000000000000000000000000000000000000000000000000000000"
+    api_secret = "0000000000000000000000000000000000000000000000000000000000000000"
+    exchange = AuthAPI(api_key, api_secret)
     assert type(exchange) is AuthAPI
 
 def test_instantiate_authapi_with_api_key_error():
     api_key = "ERROR"
-    api_secret = "0000/0000000000/0000000000000000000000000000000000000000000000000000000000/00000000000=="
-    api_passphrase = "00000000000"
+    api_secret = "0000000000000000000000000000000000000000000000000000000000000000"
 
     with pytest.raises(SystemExit) as execinfo:
-        AuthAPI(api_key, api_secret, api_passphrase)
-    assert str(execinfo.value) == 'Coinbase Pro API key is invalid'
+        AuthAPI(api_key, api_secret)
+    assert str(execinfo.value) == 'Binance API key is invalid'
 
 def test_instantiate_authapi_with_api_secret_error():
-    api_key = "00000000000000000000000000000000"
+    api_key = "0000000000000000000000000000000000000000000000000000000000000000"
     api_secret = "ERROR"
-    api_passphrase = "00000000000"
 
     with pytest.raises(SystemExit) as execinfo:
-        AuthAPI(api_key, api_secret, api_passphrase)
-    assert str(execinfo.value) == 'Coinbase Pro API secret is invalid'
-
-def test_instantiate_authapi_with_api_passphrase_error():
-    api_key = "00000000000000000000000000000000"
-    api_secret = "0000/0000000000/0000000000000000000000000000000000000000000000000000000000/00000000000=="
-    api_passphrase = "ERROR"
-
-    with pytest.raises(SystemExit) as execinfo:
-        AuthAPI(api_key, api_secret, api_passphrase)
-    assert str(execinfo.value) == 'Coinbase Pro API passphrase is invalid'
+        AuthAPI(api_key, api_secret)
+    assert str(execinfo.value) == 'Binance API secret is invalid'
 
 def test_instantiate_authapi_with_api_url_error():
-    api_key = "00000000000000000000000000000000"
-    api_secret = "0000/0000000000/0000000000000000000000000000000000000000000000000000000000/00000000000=="
-    api_passphrase = "00000000000"
+    api_key = "0000000000000000000000000000000000000000000000000000000000000000"
+    api_secret = "0000000000000000000000000000000000000000000000000000000000000000"
     api_url = "ERROR"
 
     with pytest.raises(ValueError) as execinfo:
-        AuthAPI(api_key, api_secret, api_passphrase, api_url)
-    assert str(execinfo.value) == 'Coinbase Pro API URL is invalid'
+        AuthAPI(api_key, api_secret, api_url)
+    assert str(execinfo.value) == 'Binance API URL is invalid'
 
 def test_instantiate_publicapi_without_error():
     exchange = PublicAPI()
@@ -63,20 +53,17 @@ def test_config_json_exists_and_valid():
 
         api_key = ''
         api_secret = ''
-        api_passphrase = ''
         api_url = ''
         if 'api_key' in config and 'api_secret' in config and 'api_pass' in config and 'api_url' in config:
             api_key = config['api_key']
             api_secret = config['api_secret']
-            api_passphrase = config['api_pass']
             api_url = config['api_url']
-            AuthAPI(api_key, api_secret, api_passphrase, api_url)
-        elif 'api_key' in config['coinbasepro'] and 'api_secret' in config['coinbasepro'] and 'api_passphrase' in config['coinbasepro'] and 'api_url' in config['coinbasepro']:
-            api_key = config['coinbasepro']['api_key']
-            api_secret = config['coinbasepro']['api_secret']
-            api_passphrase = config['coinbasepro']['api_passphrase']
-            api_url = config['coinbasepro']['api_url']
-            AuthAPI(api_key, api_secret, api_passphrase, api_url)
+            AuthAPI(api_key, api_secret, api_url)
+        elif 'api_key' in config['binance'] and 'api_secret' in config['binance'] and 'api_url' in config['binance']:
+            api_key = config['binance']['api_key']
+            api_secret = config['binance']['api_secret']
+            api_url = config['binance']['api_url']
+            AuthAPI(api_key, api_secret, api_url)
     pass
 
 def test_getAccounts():
@@ -87,21 +74,19 @@ def test_getAccounts():
 
         api_key = ''
         api_secret = ''
-        api_passphrase = ''
         api_url = ''
         if 'api_key' in config and 'api_secret' in config and 'api_pass' in config and 'api_url' in config:
             api_key = config['api_key']
             api_secret = config['api_secret']
-            api_passphrase = config['api_pass']
             api_url = config['api_url']
-            
-        elif 'api_key' in config['coinbasepro'] and 'api_secret' in config['coinbasepro'] and 'api_passphrase' in config['coinbasepro'] and 'api_url' in config['coinbasepro']:
-            api_key = config['coinbasepro']['api_key']
-            api_secret = config['coinbasepro']['api_secret']
-            api_passphrase = config['coinbasepro']['api_passphrase']
-            api_url = config['coinbasepro']['api_url']
+            AuthAPI(api_key, api_secret, api_url)
+        elif 'api_key' in config['binance'] and 'api_secret' in config['binance'] and 'api_url' in config['binance']:
+            api_key = config['binance']['api_key']
+            api_secret = config['binance']['api_secret']
+            api_url = config['binance']['api_url']
+            AuthAPI(api_key, api_secret, api_url)
 
-    exchange = AuthAPI(api_key, api_secret, api_passphrase, api_url)
+    exchange = AuthAPI(api_key, api_secret, api_url)
     assert type(exchange) is AuthAPI
 
     df = exchange.getAccounts()
@@ -120,40 +105,39 @@ def test_getAccount():
 
         api_key = ''
         api_secret = ''
-        api_passphrase = ''
         api_url = ''
         if 'api_key' in config and 'api_secret' in config and 'api_pass' in config and 'api_url' in config:
             api_key = config['api_key']
             api_secret = config['api_secret']
-            api_passphrase = config['api_pass']
             api_url = config['api_url']
-            
-        elif 'api_key' in config['coinbasepro'] and 'api_secret' in config['coinbasepro'] and 'api_passphrase' in config['coinbasepro'] and 'api_url' in config['coinbasepro']:
-            api_key = config['coinbasepro']['api_key']
-            api_secret = config['coinbasepro']['api_secret']
-            api_passphrase = config['coinbasepro']['api_passphrase']
-            api_url = config['coinbasepro']['api_url']
+            AuthAPI(api_key, api_secret, api_url)
+        elif 'api_key' in config['binance'] and 'api_secret' in config['binance'] and 'api_url' in config['binance']:
+            api_key = config['binance']['api_key']
+            api_secret = config['binance']['api_secret']
+            api_url = config['binance']['api_url']
+            AuthAPI(api_key, api_secret, api_url)
 
-    exchange = AuthAPI(api_key, api_secret, api_passphrase, api_url)
+    exchange = AuthAPI(api_key, api_secret, api_url)
     assert type(exchange) is AuthAPI
 
     df = exchange.getAccounts()
 
-    assert len(df) > 0
-
-    account = df[['id']].head(1).values[0][0]
-    assert len(account) > 0
+    account = df.head(1)['id'].values[0]
+    assert account >= 0
 
     df = exchange.getAccount(account)
     assert type(df) is pandas.core.frame.DataFrame
 
     assert len(df) == 1
 
+    df.drop(['index'], axis=1, inplace=True)
+
     actual = df.columns.to_list()
     expected = [ 'id', 'currency', 'balance', 'hold', 'available', 'profile_id', 'trading_enabled' ]
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getFeesWithoutMarket():
     filename = 'config.json'
 
@@ -189,6 +173,7 @@ def test_getFeesWithoutMarket():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getFeesWithMarket():
     filename = 'config.json'
 
@@ -224,6 +209,7 @@ def test_getFeesWithMarket():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getTakerFeeWithoutMarket():
     filename = 'config.json'
 
@@ -253,6 +239,7 @@ def test_getTakerFeeWithoutMarket():
     assert type(fee) is float
     assert fee > 0
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getTakerFeeWithMarket():
     filename = 'config.json'
 
@@ -282,6 +269,7 @@ def test_getTakerFeeWithMarket():
     assert type(fee) is float
     assert fee > 0
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getMakerFeeWithoutMarket():
     filename = 'config.json'
 
@@ -311,6 +299,7 @@ def test_getMakerFeeWithoutMarket():
     assert type(fee) is float
     assert fee > 0
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getMakerFeeWithMarket():
     filename = 'config.json'
 
@@ -340,6 +329,7 @@ def test_getMakerFeeWithMarket():
     assert type(fee) is float
     assert fee > 0
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getUSDVolume():
     filename = 'config.json'
 
@@ -369,6 +359,7 @@ def test_getUSDVolume():
     assert type(fee) is float
     assert fee > 0
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrders():
     filename = 'config.json'
 
@@ -403,6 +394,7 @@ def test_getOrders():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersInvalidMarket():
     filename = 'config.json'
 
@@ -432,6 +424,7 @@ def test_getOrdersInvalidMarket():
         exchange.getOrders(market='ERROR')
     assert str(execinfo.value) == 'Coinbase Pro market is invalid.'
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidMarket():
     filename = 'config.json'
 
@@ -466,6 +459,7 @@ def test_getOrdersValidMarket():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersInvalidAction():
     filename = 'config.json'
 
@@ -495,6 +489,7 @@ def test_getOrdersInvalidAction():
         exchange.getOrders(action='ERROR')
     assert str(execinfo.value) == 'Invalid order action.'
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidActionBuy():
     filename = 'config.json'
 
@@ -529,6 +524,7 @@ def test_getOrdersValidActionBuy():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidActionSell():
     filename = 'config.json'
 
@@ -563,6 +559,7 @@ def test_getOrdersValidActionSell():
     assert len(actual) == len(expected)
     assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersInvalidStatus():
     filename = 'config.json'
 
@@ -592,6 +589,7 @@ def test_getOrdersInvalidStatus():
         exchange.getOrders(status='ERROR')
     assert str(execinfo.value) == 'Invalid order status.'
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidStatusAll():
     filename = 'config.json'
 
@@ -627,6 +625,7 @@ def test_getOrdersValidStatusAll():
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidStatusOpen():
     filename = 'config.json'
 
@@ -662,6 +661,7 @@ def test_getOrdersValidStatusOpen():
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidStatusPending():
     filename = 'config.json'
 
@@ -697,6 +697,7 @@ def test_getOrdersValidStatusPending():
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidStatusDone():
     filename = 'config.json'
 
@@ -732,6 +733,7 @@ def test_getOrdersValidStatusDone():
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getOrdersValidStatusActive():
     filename = 'config.json'
 
@@ -767,6 +769,7 @@ def test_getOrdersValidStatusActive():
         assert len(actual) == len(expected)
         assert all([a == b for a, b in zip(actual, expected)])
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_getTime():
     filename = 'config.json'
 
@@ -795,6 +798,7 @@ def test_getTime():
     resp = exchange.getTime()
     assert type(resp) is datetime
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_marketBuyInvalidMarket():
     filename = 'config.json'
 
@@ -824,6 +828,7 @@ def test_marketBuyInvalidMarket():
         exchange.marketBuy('ERROR', -1)
     assert str(execinfo.value) == 'Coinbase Pro market is invalid.'  
 
+@pytest.mark.skip(reason="TODO: convert Coinbase Pro test for Binance")
 def test_marketBuyInvalidAmount():
     filename = 'config.json'
 

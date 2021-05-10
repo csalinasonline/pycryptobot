@@ -38,6 +38,7 @@ parser.add_argument('--lastaction', type=str, help="optionally set the last acti
 
 # optional options
 parser.add_argument('--sellatresistance', action="store_true", help="sell at resistance or upper fibonacci band")
+parser.add_argument('--autorestart', action="store_true", help="Auto restart the bot in case of exception")
 
 # disable defaults
 parser.add_argument('--disablebullonly', action="store_true", help="disable only buying in bull market")
@@ -95,6 +96,7 @@ class PyCryptoBot():
         self.last_action = None
 
         self.sellatresistance = False
+        self.autorestart = False
 
         self.disablebullonly = False
         self.disablebuynearhigh = False
@@ -229,9 +231,9 @@ class PyCryptoBot():
                             if isinstance(config['trailingstoploss'], (int, str)):
                                 p = re.compile(r"^\-[0-9\.]{1,5}$")
                                 if isinstance(config['trailingstoploss'], str) and p.match(config['trailingstoploss']):
-                                    self.tailing_stop_loss = float(config['trailingstoploss'])
+                                    self.trailing_stop_loss = float(config['trailingstoploss'])
                                 elif isinstance(config['trailingstoploss'], int) and config['trailingstoploss'] >= -100 and config['trailingstoploss'] < 0:
-                                    self.tailing_stop_loss = float(config['trailingstoploss'])
+                                    self.trailing_stop_loss = float(config['trailingstoploss'])
 
                         if 'sellatloss' in config:
                             if isinstance(config['sellatloss'], int):
@@ -245,6 +247,11 @@ class PyCryptoBot():
                             if isinstance(config['sellatresistance'], int):
                                 if config['sellatresistance'] in [ 0, 1 ]:
                                     self.sellatresistance= bool(config['sellatresistance'])
+
+                        if 'autorestart' in config:
+                            if isinstance(config['autorestart'], int):
+                                if config['autorestart'] in [ 0, 1 ]:
+                                    self.autorestart= bool(config['autorestart'])
 
                         if 'disablebullonly' in config:
                             if isinstance(config['disablebullonly'], int):
@@ -421,9 +428,9 @@ class PyCryptoBot():
                             if isinstance(config['trailingstoploss'], (int, str)):
                                 p = re.compile(r"^\-[0-9\.]{1,5}$")
                                 if isinstance(config['trailingstoploss'], str) and p.match(config['trailingstoploss']):
-                                    self.tailing_stop_loss = float(config['trailingstoploss'])
+                                    self.trailing_stop_loss = float(config['trailingstoploss'])
                                 elif isinstance(config['trailingstoploss'], int) and config['trailingstoploss'] >= -100 and config['trailingstoploss'] < 0:
-                                    self.tailing_stop_loss = float(config['trailingstoploss'])
+                                    self.trailing_stop_loss = float(config['trailingstoploss'])
 
                         if 'sellatloss' in config:
                             if isinstance(config['sellatloss'], int):
@@ -437,6 +444,11 @@ class PyCryptoBot():
                             if isinstance(config['sellatresistance'], int):
                                 if config['sellatresistance'] in [ 0, 1 ]:
                                     self.sellatresistance= bool(config['sellatresistance'])
+
+                        if 'autorestart' in config:
+                            if isinstance(config['autorestart'], int):
+                                if config['autorestart'] in [ 0, 1 ]:
+                                    self.autorestart= bool(config['autorestart'])
 
                         if 'disablebullonly' in config:
                             if isinstance(config['disablebullonly'], int):
@@ -505,7 +517,7 @@ class PyCryptoBot():
                                     self.sell_at_loss = int(not config['nosellatloss'])
                                     if self.sell_at_loss == 0:
                                         self.sell_lower_pcnt = None
-                                        self.tailing_stop_loss = None
+                                        self.trailing_stop_loss = None
 
                         if 'smartswitch' in config:
                             if isinstance(config['smartswitch'], int):
@@ -619,9 +631,9 @@ class PyCryptoBot():
                                 if isinstance(config['trailingstoploss'], (int, str)):
                                     p = re.compile(r"^\-[0-9\.]{1,5}$")
                                     if isinstance(config['trailingstoploss'], str) and p.match(config['trailingstoploss']):
-                                        self.tailing_stop_loss = float(config['trailingstoploss'])
+                                        self.trailing_stop_loss = float(config['trailingstoploss'])
                                     elif isinstance(config['trailingstoploss'], int) and config['trailingstoploss'] >= -100 and config['trailingstoploss'] < 0:
-                                        self.tailing_stop_loss = float(config['trailingstoploss'])
+                                        self.trailing_stop_loss = float(config['trailingstoploss'])
 
                             if 'sellatloss' in config:
                                 if isinstance(config['sellatloss'], int):
@@ -635,6 +647,11 @@ class PyCryptoBot():
                                 if isinstance(config['sellatresistance'], int):
                                     if config['sellatresistance'] in [ 0, 1 ]:
                                         self.sellatresistance= bool(config['sellatresistance'])
+
+                            if 'autorestart' in config:
+                                if isinstance(config['autorestart'], int):
+                                    if config['autorestart'] in [ 0, 1 ]:
+                                        self.autorestart= bool(config['autorestart'])
 
                             if 'disablebullonly' in config:
                                 if isinstance(config['disablebullonly'], int):
@@ -703,7 +720,7 @@ class PyCryptoBot():
                                         self.sell_at_loss = int(not config['nosellatloss'])
                                         if self.sell_at_loss == 0:
                                             self.sell_lower_pcnt = None
-                                            self.tailing_stop_loss = None
+                                            self.trailing_stop_loss = None
 
                             if 'smartswitch' in config:
                                 if isinstance(config['smartswitch'], int):
@@ -812,9 +829,9 @@ class PyCryptoBot():
                                 if isinstance(config['trailingstoploss'], (int, str)):
                                     p = re.compile(r"^\-[0-9\.]{1,5}$")
                                     if isinstance(config['trailingstoploss'], str) and p.match(config['trailingstoploss']):
-                                        self.tailing_stop_loss = float(config['trailingstoploss'])
+                                        self.trailing_stop_loss = float(config['trailingstoploss'])
                                     elif isinstance(config['trailingstoploss'], int) and config['trailingstoploss'] >= -100 and config['trailingstoploss'] < 0:
-                                        self.tailing_stop_loss = float(config['trailingstoploss'])
+                                        self.trailing_stop_loss = float(config['trailingstoploss'])
 
                             if 'sellatloss' in config:
                                 if isinstance(config['sellatloss'], int):
@@ -827,6 +844,11 @@ class PyCryptoBot():
                                 if isinstance(config['sellatresistance'], int):
                                     if config['sellatresistance'] in [ 0, 1 ]:
                                         self.sellatresistance= bool(config['sellatresistance'])
+
+                            if 'autorestart' in config:
+                                if isinstance(config['autorestart'], int):
+                                    if config['autorestart'] in [ 0, 1 ]:
+                                        self.autorestart= bool(config['autorestart'])
 
                             if 'disablebullonly' in config:
                                 if isinstance(config['disablebullonly'], int):
@@ -1074,7 +1096,7 @@ class PyCryptoBot():
 
             self.sellpercent = args.sellpercent
 
-        if self.smart_switch == 1 and self.granularity == None:
+        if self.smart_switch == 1 and self.granularity is None:
             if self.exchange == 'coinbasepro':
                 self.granularity = 3600
             elif self.exchange == 'binance':
@@ -1146,43 +1168,46 @@ class PyCryptoBot():
                 if args.lastaction in [ 'BUY', 'SELL' ]:
                     self.last_action = args.lastaction
 
-        if args.sellatresistance == True:
+        if args.sellatresistance is True:
             self.sellatresistance = True
 
-        if args.disablebullonly == True:
+        if args.autorestart is True:
+            self.autorestart = True
+
+        if args.disablebullonly is True:
             self.disablebullonly = True
 
-        if args.disablebuynearhigh == True:
+        if args.disablebuynearhigh is True:
             self.disablebuynearhigh = True
 
-        if args.disablebuymacd == True:
+        if args.disablebuymacd is True:
             self.disablebuymacd = True
 
-        if args.disablebuyobv == True:
+        if args.disablebuyobv is True:
             self.disablebuyobv = True
     
-        if args.disablebuyelderray == True:
+        if args.disablebuyelderray is True:
             self.disablebuyelderray = True
 
-        if args.disablefailsafefibonaccilow == True:
+        if args.disablefailsafefibonaccilow is True:
             self.disablefailsafefibonaccilow = True
 
-        if args.disablefailsafelowerpcnt == True:
+        if args.disablefailsafelowerpcnt is True:
             self.disablefailsafelowerpcnt = True
 
-        if args.disableprofitbankupperpcnt == True:
+        if args.disableprofitbankupperpcnt is True:
             self.disableprofitbankupperpcnt = True
                
-        if args.disableprofitbankreversal == True:
+        if args.disableprofitbankreversal is True:
             self.disableprofitbankreversal = True
 
-        if args.disabletelegram == True:
+        if args.disabletelegram is True:
             self.disabletelegram = True
 
-        if args.disablelog == True:
+        if args.disablelog is True:
             self.disablelog = True
 
-        if args.disabletracker == True:
+        if args.disabletracker is True:
             self.disabletracker = True
         
         if self.exchange == 'binance':
@@ -1475,6 +1500,9 @@ class PyCryptoBot():
     def sellAtResistance(self):
         return self.sellatresistance
 
+    def autoRestart(self):
+        return self.autorestart
+
     def getLastAction(self):
         return self.last_action
 
@@ -1593,7 +1621,9 @@ class PyCryptoBot():
                     base_currency = (sell_percent / 100) * base_currency
 
             if self.exchange == 'coinbasepro':
-                if market.startswith('XLM-'):
+                if market.startswith('ADA-'):
+                    base_currency = round(base_currency, 2)
+                elif market.startswith('XLM-'):
                     base_currency = int(base_currency)
 
                 api = CBAuthAPI(self.getAPIKey(), self.getAPISecret(), self.getAPIPassphrase(), self.getAPIURL())
@@ -1703,7 +1733,7 @@ class PyCryptoBot():
             print('--------------------------------------------------------------------------------')
             print('|                             Python Crypto Bot                                |')
             print('--------------------------------------------------------------------------------')
-            txt = '              Release : ' + github.getLatestReleaseName() + ' (commit: ' + str(github.getMainBranchCommitTotal()) + ')'
+            txt = '              Release : ' + github.getLatestReleaseName()
             print('|', txt, (' ' * (75 - len(txt))), '|')
 
             print('--------------------------------------------------------------------------------')
@@ -1779,10 +1809,12 @@ class PyCryptoBot():
             print('|', txt, (' ' * (75 - len(txt))), '|')     
 
             txt = '              Tracker : ' + str(not self.disableTracker()) + '  --disabletracker'
-            print('|', txt, (' ' * (75 - len(txt))), '|')     
+            print('|', txt, (' ' * (75 - len(txt))), '|') 
 
-            if self.sellUpperPcnt() != None or self.sellLowerPcnt() != None or self.allowSellAtLoss() == False:
-                print('================================================================================')
+            txt = '     Auto restart Bot : ' + str(self.autoRestart()) + '  --autorestart'
+            print('|', txt, (' ' * (75 - len(txt))), '|')
+
+            print('================================================================================')
 
         # if live
         if self.isLive() == 1:

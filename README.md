@@ -1,6 +1,6 @@
 [![Docker](https://github.com/whittlem/pycryptobot/actions/workflows/container.yml/badge.svg)](https://github.com/whittlem/pycryptobot/actions/workflows/container.yml/badge.svg)
 
-# Python Crypto Bot v2.0.1 (pycryptobot)
+# Python Crypto Bot v2.0.3 (pycryptobot)
 
 ## Join our chat on Telegram
 
@@ -156,10 +156,12 @@ For example, if you are trading `BTCEUR` and `ETHEUR` your market folder should 
 ├── market
 │ ├── BTCEUR
 │ │ ├── config.json
+│ │ ├── pycryptobot.log
 │ │ └── graphs
 │ └── ETHEUR
-│     ├── config.json
-│     └── graphs
+│   ├── config.json
+│   ├── pycryptobot.log
+│   └── graphs
 ```
 
 modify docker-compose.yaml
