@@ -68,39 +68,39 @@ class TechnicalAnalysis():
         bullish_harami
         candlestick_finder
         dark_cloud_cover
-        doji
+        doji                    DONE
         doji_star
         dragonfly_doji
-        evening_star
-        evening_star_doji
+        evening_star            DONE
+        evening_star_doji       DONE
         gravestone_doji
-        hammer
-        hanging_man
-        inverted_hammer
-        morning_star
-        morning_star_doji
+        hammer                  DONE
+        hanging_man             DONE
+        inverted_hammer         DONE
+        morning_star            DONE
+        morning_star_doji       DONE
         piercing_pattern
         rain_drop
         rain_drop_doji
-        shooting_star
+        shooting_star           DONE
         star
         """
         self.addCandleAstralBuy()
         self.addCandleAstralSell()
-        self.addCandleHammer()
-        self.addCandleInvertedHammer()
-        self.addCandleShootingStar()
-        self.addCandleHangingMan()
+        self.addCandleHammer()              # DONE
+        self.addCandleInvertedHammer()      # DONE
+        self.addCandleShootingStar()        # DONE
+        self.addCandleHangingMan()          # DONE
         self.addCandleThreeWhiteSoldiers()
         self.addCandleThreeBlackCrows()
-        self.addCandleDoji()
+        self.addCandleDoji()                # DONE
         self.addCandleThreeLineStrike()
         self.addCandleTwoBlackGapping()
-        self.addCandleMorningStar()
-        self.addCandleEveningStar()
+        self.addCandleMorningStar()         # DONE
+        self.addCandleEveningStar()         # DONE
         self.addCandleAbandonedBaby()
-        self.addCandleMorningDojiStar()
-        self.addCandleEveningDojiStar()
+        self.addCandleMorningDojiStar()     # DONE
+        self.addCandleEveningDojiStar()     # DONE
 
     """Candlestick References
     https://commodity.com/technical-analysis
