@@ -101,6 +101,8 @@ class TechnicalAnalysis():
         self.addCandleAbandonedBaby()
         self.addCandleMorningDojiStar()     # DONE
         self.addCandleEveningDojiStar()     # DONE
+        #
+        self.addBearishEngulfing()
 
     """Candlestick References
     https://commodity.com/technical-analysis
@@ -278,6 +280,17 @@ class TechnicalAnalysis():
 
     def addCandleEveningDojiStar(self):
         self.df['evening_doji_star'] = self.candleEveningDojiStar()
+
+    def candleBearishEngulfing(self):
+        """** Candlestick Detected: Bearish Engulfing ("Reliable - Reversal - Bearish Pattern - Down")"""
+
+        return ((self.df['open'] >= self.df['close'].shift(1)) & (self.df['close'].shift(1) > self.df['open'].shift(1)))\
+            & (self.df['open'] > self.df['close'])\
+            & (self.df['open'].shift(1) >= self.df['close'])\
+            & ((self.df['open'] - self.df['close']) > (self.df['close'].shift(1) - self.df['open'].shift(1)))
+
+    def addBearishEngulfing(self):
+        self.df['bearish_engulfing'] = self.candleBearishEngulfing()       
 
     def candleAstralBuy(self):
         """*** Candlestick Detected: Astral Buy (Fibonacci 3, 5, 8)"""
