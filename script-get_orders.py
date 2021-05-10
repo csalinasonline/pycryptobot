@@ -8,9 +8,9 @@ account = TradingAccount(app)
 orders = account.getOrders()
 print (orders)
 
-# Binance Live orders
-app = PyCryptoBot(exchange='binance')
-app.setLive(1)
-account = TradingAccount(app)
-orders = account.getOrders('DOGEBTC')
-print (orders)
+# # Binance Live orders
+# app = PyCryptoBot(exchange='binance')
+# app.setLive(1)
+# account = TradingAccount(app)
+# orders = account.getOrders('DOGEBTC')
+# print (orders)
